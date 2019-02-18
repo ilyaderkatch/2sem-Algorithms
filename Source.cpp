@@ -1,4 +1,4 @@
-//Найти цикл минимальной длины(задача2)
+//Second Problem: find minimal cycle
 
 #include <iostream>
 #include <vector>
@@ -11,7 +11,7 @@ using std::cout;
 using std::endl;
 using std::pair;
 
-//реализация графа
+//graph implementation
 
 class ListGraph{
 private:
@@ -54,11 +54,11 @@ void ListGraph::GetNextVertices(int vertex, vector<int> &vertices) const
 	vertices = ChildrenList[vertex];
 }
 
-//конец реализации графа
+//end of implementation
 
 int CycleFromVertix(int vertex, const ListGraph &A)
 {
-	vector <pair <int, int> > Visited(A.VerticesCount(), {0,0}); //первое поле глубина, второе поле номер родителя(все значения определяются в порядке обхода bfs
+	vector <pair <int, int> > Visited(A.VerticesCount(), {0,0}); //ГЇГҐГ°ГўГ®ГҐ ГЇГ®Г«ГҐ ГЈГ«ГіГЎГЁГ­Г , ГўГІГ®Г°Г®ГҐ ГЇГ®Г«ГҐ Г­Г®Г¬ГҐГ° Г°Г®Г¤ГЁГІГҐГ«Гї(ГўГ±ГҐ Г§Г­Г Г·ГҐГ­ГЁГї Г®ГЇГ°ГҐГ¤ГҐГ«ГїГѕГІГ±Гї Гў ГЇГ®Г°ГїГ¤ГЄГҐ Г®ГЎГµГ®Г¤Г  bfs
 	queue <int> Q;
 	Q.push(vertex);
 	Visited[vertex] = { 1, -1 };
@@ -78,14 +78,14 @@ int CycleFromVertix(int vertex, const ListGraph &A)
 			}
 			else if (Visited[v].second != vertices[i])
 			{
-				return Visited[v].first + Visited[vertices[i]].first - 1; //если пришли уже в хоженую вершину(не родитель), то нашли цикл
+				return Visited[v].first + Visited[vertices[i]].first - 1; //ГҐГ±Г«ГЁ ГЇГ°ГЁГёГ«ГЁ ГіГ¦ГҐ Гў ГµГ®Г¦ГҐГ­ГіГѕ ГўГҐГ°ГёГЁГ­Гі(Г­ГҐ Г°Г®Г¤ГЁГІГҐГ«Гј), ГІГ® Г­Г ГёГ«ГЁ Г¶ГЁГЄГ«
 			}
 		}
 	}
 	return -1;
 }
 
-int MinCycle(const ListGraph &A) // находим минимальный цикл - проходимся от каждой вершины
+int MinCycle(const ListGraph &A) // Г­Г ГµГ®Г¤ГЁГ¬ Г¬ГЁГ­ГЁГ¬Г Г«ГјГ­Г»Г© Г¶ГЁГЄГ« - ГЇГ°Г®ГµГ®Г¤ГЁГ¬Г±Гї Г®ГІ ГЄГ Г¦Г¤Г®Г© ГўГҐГ°ГёГЁГ­Г»
 {
 	int mincycle = -1;
 	for (int i = 0; i < A.VerticesCount(); ++i)
