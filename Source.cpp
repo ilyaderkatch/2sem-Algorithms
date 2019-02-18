@@ -58,8 +58,7 @@ void ListGraph::GetNextVertices(int vertex, vector<int> &vertices) const
 
 int CycleFromVertix(int vertex, const ListGraph &A)
 {
-	vector <pair <int, int> > Visited(A.VerticesCount(), {0,0}); //ïåðâîå ïîëå ãëóáèíà, âòîðîå ïîëå íîìåð ðîäèòåëÿ(âñå çíà÷åíèÿ îïðåäåëÿþòñÿ â ïîðÿäêå îáõîäà bfs
-	queue <int> Q;
+	vector <pair <int, int> > Visited(A.VerticesCount(), {0,0}); //The first argument is depth in BFS, the second is num of parent(BFS too)
 	Q.push(vertex);
 	Visited[vertex] = { 1, -1 };
 	while (Q.size())
@@ -78,14 +77,13 @@ int CycleFromVertix(int vertex, const ListGraph &A)
 			}
 			else if (Visited[v].second != vertices[i])
 			{
-				return Visited[v].first + Visited[vertices[i]].first - 1; //åñëè ïðèøëè óæå â õîæåíóþ âåðøèíó(íå ðîäèòåëü), òî íàøëè öèêë
-			}
+				return Visited[v].first + Visited[vertices[i]].first - 1; //found visited vertex(not parent of v) -> found cycle
 		}
 	}
 	return -1;
 }
 
-int MinCycle(const ListGraph &A) // íàõîäèì ìèíèìàëüíûé öèêë - ïðîõîäèìñÿ îò êàæäîé âåðøèíû
+int MinCycle(const ListGraph &A) // find cycle from all vertices
 {
 	int mincycle = -1;
 	for (int i = 0; i < A.VerticesCount(); ++i)
