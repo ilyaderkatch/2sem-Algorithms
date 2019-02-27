@@ -5,7 +5,7 @@ ArcGraph::ArcGraph(int n)
 	NumVertices = n;
 }
 
-bool operator= (const ListGraph &InputGraph)
+bool operator= (const ArcGraph &InputGraph)
 {
 	this->Graph = InputGraph.Graph;
 }
