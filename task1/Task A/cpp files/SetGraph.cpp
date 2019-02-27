@@ -6,6 +6,12 @@ SetGraph::SetGraph(int n)
 	ChildrenList.resize(n);
 }
 
+bool operator= (const SetGraph &InputGraph)
+{
+	this->ParentsList = InputGraph.ParentsList;
+	this->ChildrenList = InputGraph.ChildrenList;
+}
+
 SetGraph::SetGraph(const IGraph *InputGraph)
 {
 	int size = InputGraph->VerticesCount();
