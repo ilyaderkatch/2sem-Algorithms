@@ -11,8 +11,7 @@ private:
 public:
 	ListGraph(int n);
 	ListGraph(const IGraph *InputGraph);
-	ListGraph(const ListGraph *InputGraph);
-	
+
         friend bool operator= (const ListGraph &InputGraph);
 
 	void AddEdge(int from, int to);
