@@ -12,6 +12,8 @@ private:
 public:
 	SetGraph(int n);
 	SetGraph(const IGraph *InputGraph);
+	
+	friend bool operator= (const SetGraph &InputGraph);
 
 	void AddEdge(int from, int to);
 	int VerticesCount() const;
