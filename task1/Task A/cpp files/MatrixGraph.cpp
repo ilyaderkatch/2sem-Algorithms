@@ -5,6 +5,11 @@ MatrixGraph::MatrixGraph(int n)
 	Table.resize(n, vector <bool>(n, false));
 }
 
+bool operator= (const MatrixGraph &InputGraph)
+{
+	this->Table = InputGraph.Table;
+}
+
 MatrixGraph::MatrixGraph(const IGraph *InputGraph)
 {
 	int size = InputGraph->VerticesCount();
