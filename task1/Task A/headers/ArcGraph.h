@@ -13,6 +13,9 @@ private:
 public:
 	ArcGraph(int n);
 	ArcGraph(const IGraph *InputGraph);
+	ArcGraph(const ArcGraph *InputGraph);
+	
+        friend bool operator= (const ArcGraph &InputGraph);
 
 	void AddEdge(int from, int to);
 	int VerticesCount() const;
