@@ -10,6 +10,8 @@ private:
 public:
 	MatrixGraph(int n);
 	MatrixGraph(const IGraph *InputGraph);
+	
+	friend bool operator= (const MatrixGraph &InputGraph);
 
 	void AddEdge(int from, int to);
 	int VerticesCount() const;
