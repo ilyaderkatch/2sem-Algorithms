@@ -5,6 +5,11 @@ ArcGraph::ArcGraph(int n)
 	NumVertices = n;
 }
 
+bool operator= (const ListGraph &InputGraph)
+{
+	this->Graph = InputGraph.Graph;
+}
+
 ArcGraph::ArcGraph(const IGraph *InputGraph)
 {
 	NumVertices = InputGraph->VerticesCount();
