@@ -130,7 +130,7 @@ int Kosarau(const ListGraph &Graph, const ListGraph &TGraph, vector <int> &Resul
     return marker;
 }
 
-ListGraph MakeCondensat(ListGraph &Graph, ListGraph &TGraph)
+ListGraph MakeCondensat(const ListGraph &Graph, const ListGraph &TGraph)
 {
     vector <int> Kos(Graph.VerticesCount(), 0);
     int n = Kosarau(Graph, TGraph, Kos);
@@ -147,7 +147,7 @@ ListGraph MakeCondensat(ListGraph &Graph, ListGraph &TGraph)
     return Condensat;
 }
 
-int Result(ListGraph &Graph, ListGraph &TGraph)
+int Result(const ListGraph &Graph, const ListGraph &TGraph)
 {
     int grand_child = 0;
     int grand_parent = 0;
