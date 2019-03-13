@@ -14,6 +14,12 @@ private:
     vector <vector <int> > ParentsList;
     vector <vector <int> > ChildrenList;
 
+    void DfsForTGraph(int vertex, vector <int> &visited, int &leave_time) const;
+    void DfsForGraph(int vertex, vector <int> &Result, int marker) const;
+    ListGraph MakeTGraph() const;
+    void Kosarau(vector <int> &Result, int &marker) const;
+    ListGraph MakeCondensat() const;
+
 public:
     ListGraph(int n);
 
@@ -21,7 +27,11 @@ public:
     int VerticesCount() const;
     void GetNextVertices(int vertex, vector<int> &vertices) const;
     void GetPrevVertices(int vertex, vector<int> &vertices) const;
+
+    int Result() const;
 };
+
+//start of graph's implementation
 
 
 ListGraph::ListGraph(int n)
@@ -32,6 +42,8 @@ ListGraph::ListGraph(int n)
 
 void ListGraph::AddEdge(int from, int to)
 {
+    from = from - 1;
+    to = to - 1;
     if (from == to)
     {
         return;
@@ -62,55 +74,63 @@ void ListGraph::GetPrevVertices(int vertex, vector<int> &vertices) const
     vertices = ParentsList[vertex];
 }
 
-void Out(vector <int> A)
-{
-    for (int i = 0; i < A.size(); ++i)
-    {
-        cout << A[i] << " ";
-    }
-    cout << endl;
-}
+//end of graph's implementation
 
-void DfsForTGraph(int vertex, const ListGraph &Graph, vector <int> &visited, int &leave_time)
+void ListGraph::DfsForTGraph(int vertex, vector <int> &visited, int &leave_time) const //DFS for transposed graph with leave time for all vertexes
 {
     if (visited[vertex] == 0)
     {
         visited[vertex] = -1;
-        vector <int> ChildrenOfVertex;
-        Graph.GetNextVertices(vertex, ChildrenOfVertex);
-        for (int i = 0; i < ChildrenOfVertex.size(); ++i)
+        for (int i = 0; i < ChildrenList.size(); ++i)
         {
-            DfsForTGraph(ChildrenOfVertex[i], Graph, visited, leave_time);
+            for (int j = 0; j < ChildrenList[i].size(); ++j)
+            {
+                this->DfsForTGraph(ChildrenList[i][j], visited, leave_time);
+            }
         }
         visited[vertex] = leave_time;
         ++leave_time;
     }
 }
 
-void DfsForGraph(int vertex, const ListGraph &Graph, vector <int> &Result, int marker)
+void ListGraph::DfsForGraph(int vertex, vector <int> &Result, int marker) const //DFS for normal graph
 {
     if (Result[vertex] == 0)
     {
         Result[vertex] = marker;
-        vector <int> ChildrenOfVertex;
-        Graph.GetNextVertices(vertex, ChildrenOfVertex);
-        for (int i = 0; i < ChildrenOfVertex.size(); ++i)
+        for (int j = 0; j < ChildrenList[vertex].size(); ++j)
         {
-            DfsForGraph(ChildrenOfVertex[i], Graph, Result, marker);
+            this->DfsForGraph(ChildrenList[vertex][j], Result, marker);
         }
     }
 }
 
-int Kosarau(const ListGraph &Graph, const ListGraph &TGraph, vector <int> &Result)
+ListGraph ListGraph::MakeTGraph() const //Make transposed Graph
 {
-    int n = Graph.VerticesCount();
+    ListGraph TGraph(this->VerticesCount());
+    for (int i = 0; i < this->VerticesCount(); ++i)
+    {
+        vector <int> children;
+        this->GetNextVertices(i, children);
+        for (int j = 0; j < children.size(); ++j)
+        {
+            TGraph.AddEdge(children[j], i);
+        }
+    }
+    return TGraph;
+}
+
+void ListGraph::Kosarau(vector <int> &Result, int &marker) const  //Kosarau algorithm
+{
+    ListGraph TGraph = this->MakeTGraph();
+    int n = this->VerticesCount();
     vector <int> visited(n, 0);
     int leave_time = 1;
     for (int i = 0; i < n; ++i)
     {
         if (visited[i] == 0)
         {
-            DfsForTGraph(i, TGraph, visited, leave_time);
+            TGraph.DfsForTGraph(i, visited, leave_time);   //take order
         }
     }
     vector <int> Order(n);
@@ -118,27 +138,27 @@ int Kosarau(const ListGraph &Graph, const ListGraph &TGraph, vector <int> &Resul
     {
         Order[n - visited[i]] = i;
     }
-    int marker = 0;
     for (int i = 0; i < Order.size(); ++i)
     {
         if (Result[Order[i]] == 0)
         {
-            DfsForGraph(Order[i], Graph, Result, marker);
+            this->DfsForGraph(Order[i], Result, marker);     //make dfs with special order
             ++marker;
         }
     }
-    return marker;
 }
 
-ListGraph MakeCondensat(const ListGraph &Graph, const ListGraph &TGraph)
+ListGraph ListGraph::MakeCondensat() const   // Make Condensat from graph
 {
-    vector <int> Kos(Graph.VerticesCount(), 0);
-    int n = Kosarau(Graph, TGraph, Kos);
+    vector <int> Kos(this->VerticesCount(), 0);
+    ListGraph TGraph = this->MakeTGraph();  //take TGraph
+    int n = 1;
+    this->Kosarau(Kos, n);                  //divide to components
     ListGraph Condensat(n);
-    for (int i = 0; i < Graph.VerticesCount(); ++i)
+    for (int i = 0; i < this->VerticesCount(); ++i)
     {
         vector <int> Children;
-        Graph.GetNextVertices(i, Children);
+        this->GetNextVertices(i, Children);
         for (int j = 0; j < Children.size(); ++j)
         {
             Condensat.AddEdge(Kos[i], Kos[Children[j]]);
@@ -147,11 +167,11 @@ ListGraph MakeCondensat(const ListGraph &Graph, const ListGraph &TGraph)
     return Condensat;
 }
 
-int Result(const ListGraph &Graph, const ListGraph &TGraph)
+int ListGraph::Result() const       //take a result of the problem
 {
     int grand_child = 0;
     int grand_parent = 0;
-    ListGraph Condensat = MakeCondensat(Graph, TGraph);
+    ListGraph Condensat = this->MakeCondensat();
     if (Condensat.VerticesCount() == 1)
     {
         return 0;
@@ -186,9 +206,8 @@ int main() {
     {
         --m;
         cin >> a >> b;
-        Graph.AddEdge(a - 1, b - 1);
-        TGraph.AddEdge(b - 1, a - 1);
+        Graph.AddEdge(a, b);
     }
-    cout << Result(Graph, TGraph) << endl;
+    cout << Graph.Result() << endl;
     return 0;
 }
