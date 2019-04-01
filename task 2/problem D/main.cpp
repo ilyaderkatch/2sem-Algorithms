@@ -16,6 +16,7 @@ using std::min;
 using std::map;
 
 unsigned long long DEGREE[16] = {0x1, 0x10, 0x100, 0x1000, 0x10000, 0x100000, 0x1000000, 0x10000000, 0x100000000, 0x1000000000, 0x10000000000, 0x100000000000, 0x1000000000000, 0x10000000000000, 0x100000000000000, 0x1000000000000000};
+//array with degrees in hex 
 
 class State{     //state
 private:
