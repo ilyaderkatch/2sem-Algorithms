@@ -9,7 +9,7 @@ using std::cout;
 using std::endl;
 using std::pair;
 
-//реализация реба графа
+//реализация ребра графа
 
 struct Edge
 {
@@ -79,7 +79,7 @@ int ListGraph::Prim() const  //поиск мин остова
             result += NewVertex.weight;
             vector <Edge> Children;
             this->GetNextVertices(NewVertex.to, Children);
-            for (int i = 0; i < Children.size(); ++i)  //всех непосещенных детей новой вершины отправляем в стек
+            for (int i = 0; i < Children.size(); ++i)  //всех непосещенных детей новой вершины отправляем в сет
             {
                 if (!IsVisited[Children[i].to])
                 {
