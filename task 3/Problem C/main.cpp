@@ -19,6 +19,8 @@ int INFINITY = 1000000001;
 class MatrixGraph{
 private:
     vector <vector <int> > Table;
+    bool OpportunityToUpgrade(int start, int finish, const MatrixGraph &flow, vector <int> &distance) const;
+    int FindBlockWay(int vertex, int result, int finish, MatrixGraph &flow, vector <int> &nondelete, vector <int> &distance) const;
 
 public:
     MatrixGraph(int n);
@@ -27,8 +29,6 @@ public:
     int VerticesCount() const;
     void GetNextVertices(int vertex, vector<int> &vertices) const;
     int Dinic(int start, int finish) const;
-    bool OpportunityToUpgrade(int start, int finish, const MatrixGraph &flow, vector <int> &distance) const;
-    int FindBlockWay(int vertex, int result, int finish, MatrixGraph &flow, vector <int> &nondelete, vector <int> &distance) const;
 };
 
 
