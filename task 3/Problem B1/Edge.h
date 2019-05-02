@@ -4,6 +4,7 @@
 #include <iostream>
 #include <vector>
 #include <set>
+#include <string>
 
 using std::vector;
 using std::set;
@@ -11,6 +12,7 @@ using std::cin;
 using std::cout;
 using std::endl;
 using std::pair;
+using std::string;
 
 struct Edge
 {
