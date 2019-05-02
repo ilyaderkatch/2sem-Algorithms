@@ -1,5 +1,6 @@
 #include "MatrixGraph.h"
 
+
 MatrixGraph::MatrixGraph(int n)
 {
     Table.resize(n, vector <double>(n, 0));
@@ -46,14 +47,17 @@ MatrixGraph MatrixGraph::operator+(const MatrixGraph &B)
     return C;
 }
 
-void MatrixGraph::Output()
+void MatrixGraph::Foutput(string s)
 {
+    ofstream out;
+    out.open(s, ios::app);
     for (int i = 0; i < Table.size(); ++i)
     {
         for (int j = 0; j < Table.size(); ++j)
         {
-            cout << Table[i][j] << " ";
+            out << Table[i][j] << " ";
         }
-        cout << endl;
+        out << endl;
     }
+    out << endl;
 }
