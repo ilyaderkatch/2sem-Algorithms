@@ -6,7 +6,7 @@ using std::cin;
 using std::cout;
 using std::endl;
 
-int log(int n) {
+int log(int n) {   //считаем двоичный логорифм
     if (n == 1) {
         return 0;
     }
@@ -15,9 +15,9 @@ int log(int n) {
 
 class LCA{
 private:
-    vector <long long> Parents;
-    vector <vector <long long> > GrandParents;
-    vector <long long> Depth;
+    vector <long long> Parents; //список родителей
+    vector <vector <long long> > GrandParents; //список родитлей со степенным шагом
+    vector <long long> Depth;  //глубина для каждой вершины
     void Predprocess();
     void UpdateDepth(long long k);
 
@@ -43,9 +43,9 @@ long long LCA::FindParent(long long u, long long v) const
         u = v;
         v = t;
     }
-    long long diff = Depth[u] - Depth[v];
+    long long diff = Depth[u] - Depth[v];  //разница глубин
     long long deg = 0;
-    while (diff != 0)
+    while (diff != 0)   //устраняем разницу, делая степенные полъемы
     {
         if (diff % 2 == 1)
         {
@@ -62,7 +62,7 @@ long long LCA::FindParent(long long u, long long v) const
     {
         return v;
     }
-    for (int i = int(log(Parents.size())); i >= 0; --i)
+    for (int i = int(log(Parents.size())); i >= 0; --i)  //ищем разных предков на одном уровне - если таких нет, то мы нашли ответ
     {
         if (GrandParents[v][i] != GrandParents[u][i])
         {
@@ -70,7 +70,7 @@ long long LCA::FindParent(long long u, long long v) const
             u = GrandParents[u][i];
         }
     }
-    return Parents[v];
+    return Parents[v];  //ответ - их общий предок
 }
 
 LCA::LCA(long long n)
@@ -97,10 +97,10 @@ LCA::LCA(long long n)
     this->Predprocess();
 }
 
-void LCA::Predprocess()
+void LCA::Predprocess() // динамическое заполнение списка родителей со степенным шагом
 {
     long long n = Parents.size();
-    GrandParents.resize(n, vector<long long>(log(n)));
+    GrandParents.resize(n, vector<long long>(log(n) + 1));
     for (long long i = 0; i < n; ++i)
     {
         GrandParents[i][0] = Parents[i];
@@ -129,7 +129,7 @@ int main()
     {
         last = A.FindParent((a + last) % n, b);
         result += last;
-        a = (x * a + y * b + z) % n;
+        a = (x * a + y * b + z) % n; //генерация новых запросов
         b = (x * b + y * a + z) % n;
     }
     cout << result << endl;
