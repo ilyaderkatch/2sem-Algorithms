@@ -7,18 +7,18 @@ using std::cout;
 using std::endl;
 using std::max;
 
-struct Vertex{
+struct Vertex{             //вершина дерева отрезков
 public:
-    int suf = 0;
-    int pref = 0;
-    int len = 1;
-    bool all_one = false;
-    int max = 0;
+    int suf = 0;   //длина суффикса из 1
+    int pref = 0;  //длина префикса из 1
+    int len = 1;   //длина подпоследовательности
+    bool all_one = false;  //правда ли, что в подпоследовательности все из 1
+    int max = 0;    //максимальное колво подряд идущих из 1
     Vertex(int _pref, int _suf, int _len, bool _all_one, int _max) {pref = _pref; suf = _suf; len = _len; all_one = _all_one; max = _max;}
     Vertex() {}
 };
 
-vector <Vertex> IntToVertex(vector <int> A)
+vector <Vertex> IntToVertex(const vector <int> &A) //превращаем исходный вектор в основание дерева отрезков
 {
     int new_size = 1;
     while(A.size() > new_size)
@@ -33,7 +33,7 @@ vector <Vertex> IntToVertex(vector <int> A)
     return NewA;
 }
 
-Vertex Merge(Vertex v1, Vertex v2)
+Vertex Merge(Vertex v1, Vertex v2)   //cлияние двух подряд идущих подпоследовательностей
 {
     Vertex ans;
     ans.len = v1.len + v2.len;
@@ -41,7 +41,7 @@ Vertex Merge(Vertex v1, Vertex v2)
     ans.all_one = v1.all_one && v2.all_one;
     if (v1.all_one)
     {
-        ans.pref = v1.pref + v2.pref;
+        ans.pref = v1.len + v2.pref;
     }
     else
     {
@@ -49,16 +49,16 @@ Vertex Merge(Vertex v1, Vertex v2)
     }
     if (v2.all_one)
     {
-        ans.suf = v1.suf + v2.suf;
+        ans.suf = v1.suf + v2.len;
     }
     else
     {
-        ans.pref = v2.suf;
+        ans.suf = v2.suf;
     }
     return ans;
 }
 
-class SegmentTree{
+class SegmentTree{   //дерево отрезков
 private:
     vector <Vertex> Tree;
     void TreeBuild(const vector <Vertex> &A, int a, int b, int i);
@@ -69,7 +69,7 @@ public:
     int FindAnswer(int i, int j) const;
 };
 
-void SegmentTree::TreeBuild(const vector<Vertex> &A, int a, int b, int i)
+void SegmentTree::TreeBuild(const vector<Vertex> &A, int i, int a, int b)  //находим значение вершины дерева отрезков
 {
     if (a == b)
     {
@@ -77,7 +77,7 @@ void SegmentTree::TreeBuild(const vector<Vertex> &A, int a, int b, int i)
     }
     if (b - a == 1)
     {
-        Tree[i] = A[i];
+        Tree[i] = A[a];
     }
     else
     {
@@ -88,7 +88,7 @@ void SegmentTree::TreeBuild(const vector<Vertex> &A, int a, int b, int i)
     }
 }
 
-Vertex SegmentTree::UpToDown(int l, int r, int x, int lx, int rx) const
+Vertex SegmentTree::UpToDown(int l, int r, int x, int lx, int rx) const  //собираем фундаментальные подотрезки обходом сверху вниз
 {
     if (l <= lx && r >= rx)
     {
@@ -99,24 +99,26 @@ Vertex SegmentTree::UpToDown(int l, int r, int x, int lx, int rx) const
         return Vertex(0, 0, 0, 0, 0);
     }
     int mx = (lx + rx) / 2;
-    return Merge(UpToDown(l, r, 2 * x + 1, lx, mx), UpToDown(l, r, 2 * x + 2, mx, rx));
+    Vertex K = Merge(UpToDown(l, r, 2 * x + 1, lx, mx), UpToDown(l, r, 2 * x + 2, mx, rx));
+    return K;
 
 }
 
-int SegmentTree::FindAnswer(int i, int j) const
+int SegmentTree::FindAnswer(int i, int j) const  //найти ответ - пройти от корня с требуемыми параметрами
 {
-    return UpToDown(i, j, 0, 0, (Tree.size() + 1) / 2).max;
+    return UpToDown(i, j + 1, 0, 0, (Tree.size() + 1) / 2).max;
 }
 
 SegmentTree::SegmentTree(const vector <Vertex> &A)
 {
     Tree.resize(A.size() * 2 - 1);
-    TreeBuild(A, 0, A.size(), 0);
+    TreeBuild(A, 0, 0, A.size());
 }
 
 int main()
 {
     int n, m;
+    cin >> n >> m;
     vector <int> A;
     for (int i = 0; i < n; ++i)
     {
